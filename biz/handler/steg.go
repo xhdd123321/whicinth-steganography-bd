@@ -21,7 +21,7 @@ func EncodeImageFromImage(ctx context.Context, c *app.RequestContext) {
 	key := "encode_image"
 	id := redis.GetIncrId(ctx, key)
 	if id <= 0 {
-		utils.ResponseError(c, "GetIncrId failed, key: encode_image", nil)
+		utils.ResponseError(c, fmt.Sprintf("GetIncrId failed, key: %v", key), nil)
 		return
 	}
 	dir := filepath.Join(".", "media", key, fmt.Sprintf("%v", id))
@@ -62,12 +62,117 @@ func EncodeImageFromImage(ctx context.Context, c *app.RequestContext) {
 
 // DecodeImageFromImage 图片中解密图片
 func DecodeImageFromImage(ctx context.Context, c *app.RequestContext) {
+	// 获取文件夹唯一标识
+	key := "decode_image"
+	id := redis.GetIncrId(ctx, key)
+	if id <= 0 {
+		utils.ResponseError(c, fmt.Sprintf("GetIncrId failed, key: %v", key), nil)
+		return
+	}
+	dir := filepath.Join(".", "media", key, fmt.Sprintf("%v", id))
+	err := os.MkdirAll(dir, os.ModePerm)
+	if err != nil {
+		utils.ResponseError(c, "MkdirAll failed", err)
+		return
+	}
+	// 上传载体文件
+	carrierUploadPath := filepath.Join(dir, "carrier.png")
+	if err := fileService.UploadFile(ctx, c, "carrier_file", carrierUploadPath); err != nil {
+		hlog.CtxErrorf(ctx, "UploadFile failed, path: %v, err: %v", carrierUploadPath, err)
+		utils.ResponseError(c, "UploadFile failed", err)
+		return
+	}
+	// 获取加密文件
+	res, err := stegService.DecodeImage(carrierUploadPath)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "DecodeImage failed, path: %v, err: %v", carrierUploadPath, err)
+		utils.ResponseError(c, "DecodeImage failed", err)
+		return
+	}
+	resp := map[string]interface{}{
+		"carrier_file": carrierUploadPath,
+		"result_file":  res,
+	}
+	utils.ResponseOK(c, "DecodeImageFromImage Success", resp)
 }
 
 // EncodeDocFromImage 图片中加密文字
 func EncodeDocFromImage(ctx context.Context, c *app.RequestContext) {
+	// 获取文件夹唯一标识
+	key := "encode_doc"
+	id := redis.GetIncrId(ctx, key)
+	if id <= 0 {
+		utils.ResponseError(c, fmt.Sprintf("GetIncrId failed, key: %v", key), nil)
+		return
+	}
+	dir := filepath.Join(".", "media", key, fmt.Sprintf("%v", id))
+	err := os.MkdirAll(dir, os.ModePerm)
+	if err != nil {
+		utils.ResponseError(c, "MkdirAll failed", err)
+		return
+	}
+	// 上传载体文件
+	carrierUploadPath := filepath.Join(dir, "carrier.png")
+	if err := fileService.UploadFile(ctx, c, "carrier_file", carrierUploadPath); err != nil {
+		hlog.CtxErrorf(ctx, "UploadFile failed, path: %v, err: %v", carrierUploadPath, err)
+		utils.ResponseError(c, "UploadFile failed", err)
+		return
+	}
+	// 获取文档数据
+	dataDoc := c.PostForm("data_doc")
+	if dataDoc == "" {
+		hlog.CtxErrorf(ctx, "data_doc is empty")
+		utils.ResponseError(c, "data_doc is empty", nil)
+		return
+	}
+	// 获取加密文件
+	resultFilePath := filepath.Join(dir, "result.png")
+	err = stegService.EncodeDoc(carrierUploadPath, dataDoc, resultFilePath)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "EncodeDoc failed, path: %v, err: %v", resultFilePath, err)
+		utils.ResponseError(c, "EncodeDoc failed", err)
+		return
+	}
+	resp := map[string]interface{}{
+		"carrier_file": carrierUploadPath,
+		"data_doc":     dataDoc,
+		"result_file":  resultFilePath,
+	}
+	utils.ResponseOK(c, "EncodeDocFromImage Success", resp)
 }
 
 // DecodeDocFromImage 图片中解密文字
 func DecodeDocFromImage(ctx context.Context, c *app.RequestContext) {
+	// 获取文件夹唯一标识
+	key := "decode_doc"
+	id := redis.GetIncrId(ctx, key)
+	if id <= 0 {
+		utils.ResponseError(c, fmt.Sprintf("GetIncrId failed, key: %v", key), nil)
+		return
+	}
+	dir := filepath.Join(".", "media", key, fmt.Sprintf("%v", id))
+	err := os.MkdirAll(dir, os.ModePerm)
+	if err != nil {
+		utils.ResponseError(c, "MkdirAll failed", err)
+		return
+	}
+	// 上传载体文件
+	carrierUploadPath := filepath.Join(dir, "carrier.png")
+	if err := fileService.UploadFile(ctx, c, "carrier_file", carrierUploadPath); err != nil {
+		hlog.CtxErrorf(ctx, "UploadFile failed, path: %v, err: %v", carrierUploadPath, err)
+		utils.ResponseError(c, "UploadFile failed", err)
+		return
+	}
+	// 获取加密文档数据
+	res, err := stegService.DecodeDoc(carrierUploadPath)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "DecodeDoc failed, err: %v", err)
+		utils.ResponseError(c, "DecodeDoc failed", err)
+		return
+	}
+	resp := map[string]interface{}{
+		"carrier_file": carrierUploadPath,
+		"result_doc":   res,
+	}
+	utils.ResponseOK(c, "DecodeDocFromImage Success", resp)
 }
