@@ -4,6 +4,7 @@ package main
 
 import (
 	"github.com/cloudwego/hertz/pkg/app/server"
+	"github.com/xhdd123321/whicinth-steganography-bd/biz/pkg/cronjob"
 	"github.com/xhdd123321/whicinth-steganography-bd/biz/pkg/redis"
 )
 
@@ -11,6 +12,7 @@ func main() {
 	h := server.Default()
 
 	redis.InitRedis()
+	cronjob.InitCronjob()
 
 	register(h)
 	h.Spin()

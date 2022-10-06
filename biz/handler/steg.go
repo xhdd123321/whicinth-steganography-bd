@@ -6,7 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/bytedance/gopkg/util/logger"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
+
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/xhdd123321/whicinth-steganography-bd/biz/pkg/redis"
 	"github.com/xhdd123321/whicinth-steganography-bd/biz/service/fileService"
@@ -32,14 +33,14 @@ func EncodeImageFromImage(ctx context.Context, c *app.RequestContext) {
 	// 上传载体文件
 	carrierUploadPath := filepath.Join(dir, "carrier.png")
 	if err := fileService.UploadFile(ctx, c, "carrier_file", carrierUploadPath); err != nil {
-		logger.CtxErrorf(ctx, "UploadFile failed, path: %v, err: %v", carrierUploadPath, err)
+		hlog.CtxErrorf(ctx, "UploadFile failed, path: %v, err: %v", carrierUploadPath, err)
 		utils.ResponseError(c, "UploadFile failed", err)
 		return
 	}
 	// 上传数据文件
 	dataUploadPath := filepath.Join(dir, "data.png")
 	if err := fileService.UploadFile(ctx, c, "data_file", dataUploadPath); err != nil {
-		logger.CtxErrorf(ctx, "UploadFile failed, path: %v, err: %v", dataUploadPath, err)
+		hlog.CtxErrorf(ctx, "UploadFile failed, path: %v, err: %v", dataUploadPath, err)
 		utils.ResponseError(c, "UploadFile failed", err)
 		return
 	}
@@ -47,7 +48,7 @@ func EncodeImageFromImage(ctx context.Context, c *app.RequestContext) {
 	resultFilePath := filepath.Join(dir, "result.png")
 	err = stegService.EncodeImage(carrierUploadPath, dataUploadPath, resultFilePath)
 	if err != nil {
-		logger.CtxErrorf(ctx, "EncodeImage failed, path: %v, err: %v", resultFilePath, err)
+		hlog.CtxErrorf(ctx, "EncodeImage failed, path: %v, err: %v", resultFilePath, err)
 		utils.ResponseError(c, "EncodeImage failed", err)
 		return
 	}

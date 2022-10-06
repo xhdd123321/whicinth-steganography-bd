@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/bytedance/gopkg/util/logger"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
+
 	redisv8 "github.com/go-redis/redis/v8"
 )
 
@@ -22,16 +23,16 @@ func initRedis(ctx context.Context, client **redisv8.Client) {
 		DB:       9,
 	})
 	if rdb == nil {
-		logger.CtxFatalf(ctx, "[Redis] Init Failed")
+		hlog.CtxFatalf(ctx, "[Redis] Init Failed")
 	}
 	*client = rdb
-	logger.CtxInfof(ctx, "[Redis] PING: %s\n", Client.Ping(ctx))
+	hlog.CtxInfof(ctx, "[Redis] PING: %s\n", Client.Ping(ctx))
 }
 
 func GetEncodeLock(ctx context.Context, key string) bool {
 	lockSuccess, err := Client.SetNX(ctx, fmt.Sprintf("encode_lock_%v", key), "w", 10*time.Second).Result()
 	if err != nil {
-		logger.CtxErrorf(ctx, "[Redis] GetEncodeLock failed, err: %v", err)
+		hlog.CtxErrorf(ctx, "[Redis] GetEncodeLock failed, err: %v", err)
 		return false
 	}
 	return lockSuccess
@@ -40,7 +41,7 @@ func GetEncodeLock(ctx context.Context, key string) bool {
 func GetIncrId(ctx context.Context, key string) int64 {
 	id, err := Client.Incr(ctx, key).Result()
 	if err != nil {
-		logger.CtxErrorf(ctx, "[Redis] GetEncodeLock failed, err: %v", err)
+		hlog.CtxErrorf(ctx, "[Redis] GetEncodeLock failed, err: %v", err)
 		return 0
 	}
 	return id
