@@ -2,6 +2,7 @@ package stegService
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -13,27 +14,23 @@ import (
 func EncodeImage(carrierFile string, dataFile string, outFile string) error {
 	fByte, err := os.ReadFile(carrierFile)
 	if err != nil {
-		fmt.Printf("read carrierFile [%s] failed, err: %v\n", carrierFile, err)
-		return err
+		return errors.New(fmt.Sprintf("read carrierFile [%s] failed, err: %v", carrierFile, err))
 	}
 	carrierReader := bytes.NewReader(fByte)
 	cByte, err := os.ReadFile(dataFile)
 	if err != nil {
-		fmt.Printf("read dataFile [%s] failed, err: %v\n", dataFile, err)
-		return err
+		return errors.New(fmt.Sprintf("read dataFile [%s] failed, err: %v", dataFile, err))
 	}
 	dataReader := bytes.NewReader(cByte)
 	outWriter, err := os.Create(outFile)
 	if err != nil {
-		fmt.Printf("Create failed, err: %v\n", err)
-		return err
+		return errors.New(fmt.Sprintf("Create failed, err: %v", err))
 	}
 
 	// 加密
 	err = stegify.Encode(carrierReader, dataReader, outWriter)
 	if err != nil {
-		fmt.Printf("encode failed, err: %v\n", err)
-		return err
+		return errors.New(fmt.Sprintf("encode failed, err: %v", err))
 	}
 	return nil
 }
@@ -41,45 +38,39 @@ func EncodeImage(carrierFile string, dataFile string, outFile string) error {
 func DecodeImage(decodeFile string) (string, error) {
 	fByte, err := os.ReadFile(decodeFile)
 	if err != nil {
-		fmt.Printf("read file [%s] failed, err: %v\n", decodeFile, err)
-		return "", err
+		return "", errors.New(fmt.Sprintf("Read file [%s] failed, err: %v", decodeFile, err))
 	}
 	decodeReader := bytes.NewReader(fByte)
 
 	resFile := utils.GetExtractedFilename(decodeFile)
 	outWriter, err := os.Create(resFile)
 	if err != nil {
-		fmt.Printf("Create failed, err: %v\n", err)
-		return "", err
+		return "", errors.New(fmt.Sprintf("Create failed, err: %v", err))
 	}
 	// 解密
 	err = stegify.Decode(decodeReader, outWriter)
 	if err != nil {
-		fmt.Printf("decode failed, err: %v\n", err)
-		return "", err
+		return "", errors.New(fmt.Sprintf("Decode failed, err: %v", err))
 	}
-	return resFile, err
+	return resFile, nil
 }
 
 func EncodeDoc(carrierFile string, data string, outFile string) error {
 	fByte, err := os.ReadFile(carrierFile)
 	if err != nil {
-		fmt.Printf("read file [%s] failed, err: %v\n", carrierFile, err)
-		return err
+		return errors.New(fmt.Sprintf("read file [%s] failed, err: %v", carrierFile, err))
 	}
 	carrierReader := bytes.NewReader(fByte)
 	dataReader := strings.NewReader(data)
 	outWriter, err := os.Create(outFile)
 	if err != nil {
-		fmt.Printf("Create failed, err: %v\n", err)
-		return err
+		return errors.New(fmt.Sprintf("Create failed, err: %v", err))
 	}
 
 	// 加密
 	err = stegify.Encode(carrierReader, dataReader, outWriter)
 	if err != nil {
-		fmt.Printf("encode failed, err: %v\n", err)
-		return err
+		return errors.New(fmt.Sprintf("encode failed, err: %v", err))
 	}
 	return nil
 }
@@ -88,8 +79,7 @@ func DecodeDoc(decodeFile string) (string, error) {
 	var res string
 	fByte, err := os.ReadFile(decodeFile)
 	if err != nil {
-		fmt.Printf("read file [%s] failed, err: %v\n", decodeFile, err)
-		return res, err
+		return res, errors.New(fmt.Sprintf("read file [%s] failed, err: %v\n", decodeFile, err))
 	}
 	decodeReader := bytes.NewReader(fByte)
 
@@ -97,9 +87,8 @@ func DecodeDoc(decodeFile string) (string, error) {
 	// 解密
 	err = stegify.Decode(decodeReader, originData)
 	if err != nil {
-		fmt.Printf("decode failed, err: %v\n", err)
-		return res, err
+		return res, errors.New(fmt.Sprintf("decode failed, err: %v\n", err))
 	}
 	res = originData.String()
-	return res, err
+	return res, nil
 }
