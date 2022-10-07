@@ -31,10 +31,13 @@ _testmain.go
 .DS_Store
 /.idea
 /.vscode
-/output
+/output/*
 *.local.yml
 dumped_hertz_remote_config.json
-/media
 *.config.yaml
 !default.config.yaml
+media/decode_doc/*
+media/decode_image/*
+media/encode_doc/*
+media/encode_image/*
 		  
