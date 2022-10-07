@@ -12,6 +12,7 @@ import (
 	"strings"
 )
 
+// GetFileHash 计算文件Hash(md5)
 func GetFileHash(path string) (string, error) {
 	file, err := os.Open(path)
 	if err != nil {
@@ -27,6 +28,7 @@ func GetFileHash(path string) (string, error) {
 	return hashValue, nil
 }
 
+// GetExtractedFilename 获取被提取文件名
 func GetExtractedFilename(origin string) string {
 	dir := filepath.Dir(origin)
 	ext := filepath.Ext(origin)
@@ -40,7 +42,7 @@ func GetMediaAbPath() string {
 	return filepath.Join(GetCurrentAbPath(), "media")
 }
 
-// GetMediaAbPath 获取conf文件夹绝对路径
+// GetConfAbPath 获取conf文件夹绝对路径
 func GetConfAbPath() string {
 	return filepath.Join(GetCurrentAbPath(), "conf")
 }

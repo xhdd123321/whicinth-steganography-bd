@@ -14,14 +14,18 @@ import (
 func main() {
 	godotenv.InitGodotenv()
 	viper.InitViper()
-	h := server.Default(
-		server.WithHostPorts(viper.Conf.App.HostPorts),
-		server.WithMaxRequestBodySize(viper.Conf.App.MaxRequestBodySize),
-	)
 	redis.InitRedis()
 	qiniu.InitQiniu()
 	cronjob.InitCronjob()
 
+	serverInit()
+}
+
+func serverInit() {
+	h := server.Default(
+		server.WithHostPorts(viper.Conf.App.HostPorts),
+		server.WithMaxRequestBodySize(viper.Conf.App.MaxRequestBodySize),
+	)
 	register(h)
 	h.Spin()
 }

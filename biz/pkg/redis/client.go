@@ -12,8 +12,10 @@ import (
 	redisv8 "github.com/go-redis/redis/v8"
 )
 
-var Client *redisv8.Client
-var config *viper.Redis
+var (
+	Client *redisv8.Client
+	config *viper.Redis
+)
 
 // InitRedis 初始化Redis
 func InitRedis() {

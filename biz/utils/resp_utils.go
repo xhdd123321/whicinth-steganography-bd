@@ -6,6 +6,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 )
 
+// ResponseOK 成功响应体
 func ResponseOK(c *app.RequestContext, msg string, data interface{}) {
 	c.JSON(consts.StatusOK, utils.H{
 		"code":    0,
@@ -14,6 +15,7 @@ func ResponseOK(c *app.RequestContext, msg string, data interface{}) {
 	})
 }
 
+// ResponseError 错误响应体
 func ResponseError(c *app.RequestContext, msg string, err error) {
 	var errMsg string
 	if err != nil {

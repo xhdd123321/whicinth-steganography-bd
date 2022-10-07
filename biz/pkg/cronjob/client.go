@@ -14,12 +14,6 @@ import (
 	"github.com/xhdd123321/whicinth-steganography-bd/biz/service/fileService"
 )
 
-// TTL_MINUTE 文件夹最长生存时间
-const TTL_MINUTE = 1440
-
-// TOKEN_MINUTE 文件上传token刷新时间（默认1h过期）
-const TOKEN_MINUTE = 55
-
 var config *viper.Cronjob
 
 // InitCronjob 初始化定时任务
@@ -29,7 +23,9 @@ func InitCronjob() {
 
 	ctx := context.Background()
 	go expiredFileClearCronJob(ctx)
+	hlog.CtxInfof(ctx, "[Cronjob] ExpiredFileClearCronJob start...")
 	go refreshUploadTokenCronJob(ctx)
+	hlog.CtxInfof(ctx, "[Cronjob] RefreshUploadTokenCronJob start...")
 }
 
 // expiredFileClearCronJob 过期文件清理任务

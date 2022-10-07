@@ -12,6 +12,7 @@ import (
 	"github.com/xhdd123321/whicinth-steganography-bd/biz/utils"
 )
 
+// UploadFile 上传文件至本地
 func UploadFile(ctx context.Context, c *app.RequestContext, fileField string, uploadPath string) error {
 	file, err := c.FormFile(fileField)
 	if err != nil {
@@ -26,6 +27,7 @@ func UploadFile(ctx context.Context, c *app.RequestContext, fileField string, up
 	return nil
 }
 
+// ClearFile 清理过期文件
 func ClearFile(ctx context.Context, ttlMinutes float64) error {
 	var needRemovePathList []string
 	if err := filepath.WalkDir(utils.GetMediaAbPath(), func(path string, d fs.DirEntry, err error) error {
@@ -43,7 +45,7 @@ func ClearFile(ctx context.Context, ttlMinutes float64) error {
 	}); err != nil {
 		return err
 	}
-	success := 0
+	var success int
 	for _, path := range needRemovePathList {
 		if err := os.RemoveAll(path); err != nil {
 			hlog.CtxErrorf(ctx, "Remove failed, path: %v, err: %v", path, err)
