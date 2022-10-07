@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/cloudwego/hertz v0.3.2
 	github.com/go-redis/redis/v8 v8.11.5
+	github.com/joho/godotenv v1.4.0
 	github.com/qiniu/go-sdk/v7 v7.13.0
 	github.com/spf13/viper v1.13.0
 	github.com/stretchr/testify v1.8.0
@@ -24,7 +25,6 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/henrylee2cn/ameda v1.4.10 // indirect
 	github.com/henrylee2cn/goutil v0.0.0-20210127050712-89660552f6f8 // indirect
-	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
