@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/xhdd123321/whicinth-steganography-bd/biz/pkg/qiniu"
+
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 
 	"github.com/cloudwego/hertz/pkg/app"
@@ -15,31 +17,51 @@ import (
 	"github.com/xhdd123321/whicinth-steganography-bd/biz/utils"
 )
 
+const (
+	CARRIER_FILE = "carrier_file"
+	DATA_FILE    = "data_file"
+	DATA_DOC     = "data_doc"
+)
+
 // EncodeImageFromImage 图片中加密图片
 func EncodeImageFromImage(ctx context.Context, c *app.RequestContext) {
-	// 获取文件夹唯一标识
+	// API限流
+	remoteIp := utils.RemoteIp(c)
+	hlog.CtxInfof(ctx, "Request: %v, remoteIp: %v", string(c.URI().Path()), remoteIp)
+	if !redis.GetEncodeLock(ctx, remoteIp) {
+		hlog.CtxErrorf(ctx, "GetEncodeLock failed, remoteIp: %v", remoteIp)
+		utils.ResponseError(c, fmt.Sprintf("GetEncodeLock failed, remoteIp: %v", remoteIp), nil)
+		return
+	}
+	// 创建临时文件夹
 	key := "encode_image"
 	id := redis.GetIncrId(ctx, key)
 	if id <= 0 {
+		hlog.CtxErrorf(ctx, "GetIncrId failed, key: %v", key)
 		utils.ResponseError(c, fmt.Sprintf("GetIncrId failed, key: %v", key), nil)
 		return
 	}
 	dir := filepath.Join(".", "media", key, fmt.Sprintf("%v", id))
 	err := os.MkdirAll(dir, os.ModePerm)
 	if err != nil {
+		hlog.CtxErrorf(ctx, "MkdirAll failed, err:%v", err)
 		utils.ResponseError(c, "MkdirAll failed", err)
 		return
 	}
+	// 清理临时文件夹
+	defer func(path string) {
+		_ = os.RemoveAll(path)
+	}(dir)
 	// 上传载体文件
 	carrierUploadPath := filepath.Join(dir, "carrier.png")
-	if err := fileService.UploadFile(ctx, c, "carrier_file", carrierUploadPath); err != nil {
+	if err := fileService.UploadFile(ctx, c, CARRIER_FILE, carrierUploadPath); err != nil {
 		hlog.CtxErrorf(ctx, "UploadFile failed, path: %v, err: %v", carrierUploadPath, err)
 		utils.ResponseError(c, "UploadFile failed", err)
 		return
 	}
 	// 上传数据文件
 	dataUploadPath := filepath.Join(dir, "data.png")
-	if err := fileService.UploadFile(ctx, c, "data_file", dataUploadPath); err != nil {
+	if err := fileService.UploadFile(ctx, c, DATA_FILE, dataUploadPath); err != nil {
 		hlog.CtxErrorf(ctx, "UploadFile failed, path: %v, err: %v", dataUploadPath, err)
 		utils.ResponseError(c, "UploadFile failed", err)
 		return
@@ -52,32 +74,55 @@ func EncodeImageFromImage(ctx context.Context, c *app.RequestContext) {
 		utils.ResponseError(c, "EncodeImage failed", err)
 		return
 	}
+	// 上传结果文件至Object Storage
+	url, err := qiniu.PutFile(ctx, resultFilePath)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "PutFile failed, path: %v, err: %v", resultFilePath, err)
+		utils.ResponseError(c, "PutFile failed", err)
+		return
+	}
+	// Response
 	resp := map[string]interface{}{
 		"carrier_file": carrierUploadPath,
 		"data_file":    dataUploadPath,
 		"result_file":  resultFilePath,
+		"url":          url,
 	}
 	utils.ResponseOK(c, "EncodeImageFromImage Success", resp)
 }
 
 // DecodeImageFromImage 图片中解密图片
 func DecodeImageFromImage(ctx context.Context, c *app.RequestContext) {
-	// 获取文件夹唯一标识
+	// API限流
+	remoteIp := utils.RemoteIp(c)
+	hlog.CtxInfof(ctx, "Request: %v, remoteIp: %v", string(c.URI().Path()), remoteIp)
+	if !redis.GetDecodeLock(ctx, remoteIp) {
+		hlog.CtxErrorf(ctx, "GetDecodeLock failed, remoteIp: %v", remoteIp)
+		utils.ResponseError(c, fmt.Sprintf("GetDecodeLock failed, remoteIp: %v", remoteIp), nil)
+		return
+	}
+	// 创建临时文件夹
 	key := "decode_image"
 	id := redis.GetIncrId(ctx, key)
 	if id <= 0 {
+		hlog.CtxErrorf(ctx, "GetIncrId failed, key: %v", key)
 		utils.ResponseError(c, fmt.Sprintf("GetIncrId failed, key: %v", key), nil)
 		return
 	}
 	dir := filepath.Join(".", "media", key, fmt.Sprintf("%v", id))
 	err := os.MkdirAll(dir, os.ModePerm)
 	if err != nil {
+		hlog.CtxErrorf(ctx, "MkdirAll failed, err: %v", err)
 		utils.ResponseError(c, "MkdirAll failed", err)
 		return
 	}
+	// 清理临时文件夹
+	defer func(path string) {
+		_ = os.RemoveAll(path)
+	}(dir)
 	// 上传载体文件
 	carrierUploadPath := filepath.Join(dir, "carrier.png")
-	if err := fileService.UploadFile(ctx, c, "carrier_file", carrierUploadPath); err != nil {
+	if err := fileService.UploadFile(ctx, c, CARRIER_FILE, carrierUploadPath); err != nil {
 		hlog.CtxErrorf(ctx, "UploadFile failed, path: %v, err: %v", carrierUploadPath, err)
 		utils.ResponseError(c, "UploadFile failed", err)
 		return
@@ -89,37 +134,60 @@ func DecodeImageFromImage(ctx context.Context, c *app.RequestContext) {
 		utils.ResponseError(c, "DecodeImage failed", err)
 		return
 	}
+	// 上传结果文件至Object Storage
+	url, err := qiniu.PutFile(ctx, res)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "PutFile failed, path: %v, err: %v", res, err)
+		utils.ResponseError(c, "PutFile failed", err)
+		return
+	}
+	// Response
 	resp := map[string]interface{}{
 		"carrier_file": carrierUploadPath,
 		"result_file":  res,
+		"url":          url,
 	}
 	utils.ResponseOK(c, "DecodeImageFromImage Success", resp)
 }
 
 // EncodeDocFromImage 图片中加密文字
 func EncodeDocFromImage(ctx context.Context, c *app.RequestContext) {
-	// 获取文件夹唯一标识
+	// API限流
+	remoteIp := utils.RemoteIp(c)
+	hlog.CtxInfof(ctx, "Request: %v, remoteIp: %v", string(c.URI().Path()), remoteIp)
+	if !redis.GetEncodeLock(ctx, remoteIp) {
+		hlog.CtxErrorf(ctx, "GetEncodeLock failed, remoteIp: %v", remoteIp)
+		utils.ResponseError(c, fmt.Sprintf("GetEncodeLock failed, remoteIp: %v", remoteIp), nil)
+		return
+	}
+	// 创建临时文件夹
 	key := "encode_doc"
 	id := redis.GetIncrId(ctx, key)
 	if id <= 0 {
+		hlog.CtxErrorf(ctx, "GetIncrId failed, key: %v", key)
 		utils.ResponseError(c, fmt.Sprintf("GetIncrId failed, key: %v", key), nil)
 		return
 	}
 	dir := filepath.Join(".", "media", key, fmt.Sprintf("%v", id))
 	err := os.MkdirAll(dir, os.ModePerm)
 	if err != nil {
+		hlog.CtxErrorf(ctx, "MkdirAll failed, err: %v", err)
 		utils.ResponseError(c, "MkdirAll failed", err)
 		return
 	}
+	// 清理临时文件夹
+	defer func(path string) {
+		_ = os.RemoveAll(path)
+	}(dir)
 	// 上传载体文件
 	carrierUploadPath := filepath.Join(dir, "carrier.png")
-	if err := fileService.UploadFile(ctx, c, "carrier_file", carrierUploadPath); err != nil {
+	if err := fileService.UploadFile(ctx, c, CARRIER_FILE, carrierUploadPath); err != nil {
 		hlog.CtxErrorf(ctx, "UploadFile failed, path: %v, err: %v", carrierUploadPath, err)
 		utils.ResponseError(c, "UploadFile failed", err)
 		return
 	}
 	// 获取文档数据
-	dataDoc := c.PostForm("data_doc")
+	dataDoc := c.PostForm(DATA_DOC)
 	if dataDoc == "" {
 		hlog.CtxErrorf(ctx, "data_doc is empty")
 		utils.ResponseError(c, "data_doc is empty", nil)
@@ -133,32 +201,55 @@ func EncodeDocFromImage(ctx context.Context, c *app.RequestContext) {
 		utils.ResponseError(c, "EncodeDoc failed", err)
 		return
 	}
+	// 上传结果文件至Object Storage
+	url, err := qiniu.PutFile(ctx, resultFilePath)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "PutFile failed, path: %v, err: %v", resultFilePath, err)
+		utils.ResponseError(c, "PutFile failed", err)
+		return
+	}
+	// Response
 	resp := map[string]interface{}{
 		"carrier_file": carrierUploadPath,
 		"data_doc":     dataDoc,
 		"result_file":  resultFilePath,
+		"url":          url,
 	}
 	utils.ResponseOK(c, "EncodeDocFromImage Success", resp)
 }
 
 // DecodeDocFromImage 图片中解密文字
 func DecodeDocFromImage(ctx context.Context, c *app.RequestContext) {
-	// 获取文件夹唯一标识
+	// API限流
+	remoteIp := utils.RemoteIp(c)
+	hlog.CtxInfof(ctx, "Request: %v, remoteIp: %v", string(c.URI().Path()), remoteIp)
+	if !redis.GetDecodeLock(ctx, remoteIp) {
+		hlog.CtxErrorf(ctx, "GetDecodeLock failed, remoteIp: %v", remoteIp)
+		utils.ResponseError(c, fmt.Sprintf("GetDecodeLock failed, remoteIp: %v", remoteIp), nil)
+		return
+	}
+	// 创建临时文件夹
 	key := "decode_doc"
 	id := redis.GetIncrId(ctx, key)
 	if id <= 0 {
+		hlog.CtxErrorf(ctx, "GetIncrId failed, key: %v", key)
 		utils.ResponseError(c, fmt.Sprintf("GetIncrId failed, key: %v", key), nil)
 		return
 	}
 	dir := filepath.Join(".", "media", key, fmt.Sprintf("%v", id))
 	err := os.MkdirAll(dir, os.ModePerm)
 	if err != nil {
+		hlog.CtxErrorf(ctx, "MkdirAll failed, err: %v", err)
 		utils.ResponseError(c, "MkdirAll failed", err)
 		return
 	}
+	// 清理临时文件夹
+	defer func(path string) {
+		_ = os.RemoveAll(path)
+	}(dir)
 	// 上传载体文件
 	carrierUploadPath := filepath.Join(dir, "carrier.png")
-	if err := fileService.UploadFile(ctx, c, "carrier_file", carrierUploadPath); err != nil {
+	if err := fileService.UploadFile(ctx, c, CARRIER_FILE, carrierUploadPath); err != nil {
 		hlog.CtxErrorf(ctx, "UploadFile failed, path: %v, err: %v", carrierUploadPath, err)
 		utils.ResponseError(c, "UploadFile failed", err)
 		return
@@ -170,6 +261,7 @@ func DecodeDocFromImage(ctx context.Context, c *app.RequestContext) {
 		utils.ResponseError(c, "DecodeDoc failed", err)
 		return
 	}
+	// Response
 	resp := map[string]interface{}{
 		"carrier_file": carrierUploadPath,
 		"result_doc":   res,

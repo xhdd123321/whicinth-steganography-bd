@@ -5,13 +5,21 @@ package main
 import (
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/xhdd123321/whicinth-steganography-bd/biz/pkg/cronjob"
+	"github.com/xhdd123321/whicinth-steganography-bd/biz/pkg/godotenv"
+	"github.com/xhdd123321/whicinth-steganography-bd/biz/pkg/qiniu"
 	"github.com/xhdd123321/whicinth-steganography-bd/biz/pkg/redis"
+	"github.com/xhdd123321/whicinth-steganography-bd/biz/pkg/viper"
 )
 
 func main() {
-	h := server.Default()
-
+	godotenv.InitGodotenv()
+	viper.InitViper()
+	h := server.Default(
+		server.WithHostPorts(viper.Conf.App.HostPorts),
+		server.WithMaxRequestBodySize(viper.Conf.App.MaxRequestBodySize),
+	)
 	redis.InitRedis()
+	qiniu.InitQiniu()
 	cronjob.InitCronjob()
 
 	register(h)

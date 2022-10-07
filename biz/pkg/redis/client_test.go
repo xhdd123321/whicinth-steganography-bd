@@ -11,7 +11,6 @@ import (
 func TestMain(m *testing.M) {
 	fmt.Println("Redis Test Start")
 	InitRedis()
-	fmt.Println("Redis Init Success")
 	m.Run()
 }
 

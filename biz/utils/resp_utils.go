@@ -15,11 +15,15 @@ func ResponseOK(c *app.RequestContext, msg string, data interface{}) {
 }
 
 func ResponseError(c *app.RequestContext, msg string, err error) {
+	var errMsg string
+	if err != nil {
+		errMsg = err.Error()
+	}
 	c.JSON(consts.StatusInternalServerError, utils.H{
 		"code":    1,
 		"message": msg,
 		"data": utils.H{
-			"err_msg": err.Error(),
+			"err_msg": errMsg,
 		},
 	})
 }

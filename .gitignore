@@ -35,4 +35,6 @@ _testmain.go
 *.local.yml
 dumped_hertz_remote_config.json
 /media
+*.config.yaml
+!default.config.yaml
 		  

@@ -1,0 +1,21 @@
+App:
+  HostPorts: 127.0.0.1:8888
+  MaxRequestBodySize: 20971520  # 20M
+
+Cronjob:
+  TempFileMinute: 1440
+  TokenMinute: 55
+
+Qiniu:
+  Domain: "https://your-domain"
+  AccessKey: "your-AccessKey"
+  SecretKey: "your-SecretKey"
+  Bucket: "your-Bucket"
+  Prefix: "your-Prefix"
+
+Redis:
+  Addr: "127.0.0.1:6379"
+  Password: ""
+  Db: 1
+  EncodeLockSecond: 10
+  DecodeLockSecond: 10

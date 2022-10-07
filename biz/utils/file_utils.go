@@ -1,6 +1,9 @@
 package utils
 
 import (
+	"crypto/md5"
+	"encoding/hex"
+	"io"
 	"log"
 	"os"
 	"path"
@@ -8,6 +11,21 @@ import (
 	"runtime"
 	"strings"
 )
+
+func GetFileHash(path string) (string, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return "", err
+	}
+	h := md5.New()
+	_, err = io.Copy(h, file)
+	if err != nil {
+		return "", err
+	}
+	hash := h.Sum(nil)
+	hashValue := hex.EncodeToString(hash)
+	return hashValue, nil
+}
 
 func GetExtractedFilename(origin string) string {
 	dir := filepath.Dir(origin)
@@ -20,6 +38,11 @@ func GetExtractedFilename(origin string) string {
 // GetMediaAbPath 获取media文件夹绝对路径
 func GetMediaAbPath() string {
 	return filepath.Join(GetCurrentAbPath(), "media")
+}
+
+// GetMediaAbPath 获取conf文件夹绝对路径
+func GetConfAbPath() string {
+	return filepath.Join(GetCurrentAbPath(), "conf")
 }
 
 // GetCurrentAbPath 最终方案-全兼容
