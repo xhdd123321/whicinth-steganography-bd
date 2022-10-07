@@ -3,8 +3,11 @@ package qiniu
 import (
 	"context"
 	"fmt"
+	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/xhdd123321/whicinth-steganography-bd/biz/pkg/viper"
 
 	"github.com/xhdd123321/whicinth-steganography-bd/biz/utils"
 
@@ -13,6 +16,8 @@ import (
 
 func TestMain(m *testing.M) {
 	fmt.Println("Qiniu Test Start")
+	_ = os.Setenv("RUN_ENV", "DEV")
+	viper.InitViper()
 	InitQiniu()
 	m.Run()
 }

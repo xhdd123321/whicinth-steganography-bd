@@ -33,14 +33,14 @@ func expiredFileClearCronJob(ctx context.Context) {
 	// 启动时先执行一遍清理
 	err := fileService.ClearFile(ctx, config.TempFileMinute)
 	if err != nil {
-		hlog.CtxErrorf(ctx, "ClearFile cronjob run failed, err: %v", err)
+		hlog.CtxErrorf(ctx, "[Cronjob] ClearFile cronjob run failed, err: %v", err)
 	}
 	// 启动定时清理任务
 	sched := time.Tick(time.Minute * time.Duration(config.TempFileMinute))
 	for range sched {
 		err := fileService.ClearFile(ctx, config.TempFileMinute)
 		if err != nil {
-			hlog.CtxErrorf(ctx, "ClearFile cronjob run failed, err: %v", err)
+			hlog.CtxErrorf(ctx, "[Cronjob] ClearFile cronjob run failed, err: %v", err)
 		}
 	}
 }
@@ -54,12 +54,12 @@ func refreshUploadTokenCronJob(ctx context.Context) {
 		newToken := qiniu.GetUpToken()
 		// Token获取失败进行一次退避重试(5~15s)
 		if newToken == "" {
-			hlog.CtxErrorf(ctx, "RefreshToken failed, let's retry")
+			hlog.CtxErrorf(ctx, "[Cronjob] RefreshToken failed, let's retry")
 			time.Sleep(time.Second * time.Duration(5+rand.Intn(10)))
 			qiniu.RefreshToken()
-			hlog.CtxErrorf(ctx, "Retry result token %v", qiniu.GetUpToken())
+			hlog.CtxErrorf(ctx, "[Cronjob] Retry result token %v", qiniu.GetUpToken())
 		} else {
-			hlog.CtxInfof(ctx, "RefreshToken success, newToken: %v", newToken)
+			hlog.CtxInfof(ctx, "[Cronjob] RefreshToken success, newToken: %v", newToken)
 		}
 	}
 }

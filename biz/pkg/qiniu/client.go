@@ -38,7 +38,7 @@ func InitQiniu() {
 
 	// 构建表单上传的对象
 	formUploader = storage.NewFormUploader(&cfg)
-	hlog.Info("Init Qiniu Success")
+	hlog.Info("[Qiniu] Init Qiniu Success")
 }
 
 // PutFile 上传单文件
@@ -52,7 +52,7 @@ func PutFile(ctx context.Context, localFile string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	hlog.CtxInfof(ctx, "Put File path:[%v], key:[%v], hash:[%v]", localFile, ret.Key, ret.Hash)
+	hlog.CtxInfof(ctx, "[Qiniu] Put File path:[%v], key:[%v], hash:[%v]", localFile, ret.Key, ret.Hash)
 	return fmt.Sprintf("%v/%v", config.Domain, ret.Key), nil
 }
 
