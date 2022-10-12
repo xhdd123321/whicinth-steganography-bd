@@ -1,4 +1,4 @@
-BIN_FILE=output/whicinth-steganography-bd
+BIN_FILE=whicinth-steganography-bd
 
 hello:
 	echo "Hello"
@@ -8,5 +8,8 @@ build:
 
 run:
 	./${BIN_FILE}
+
+start:
+	nohup make run > output/log.txt 2> output/error.txt &
 
 build&run: build run
