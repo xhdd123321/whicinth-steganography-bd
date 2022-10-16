@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"strings"
+
 	"github.com/cloudwego/hertz/pkg/app"
 )
 
@@ -21,6 +23,6 @@ func RemoteIp(c *app.RequestContext) string {
 	if remoteAddr == "" {
 		remoteAddr = "127.0.0.1"
 	}
-
+	remoteAddr = strings.Split(remoteAddr, ":")[0]
 	return remoteAddr
 }

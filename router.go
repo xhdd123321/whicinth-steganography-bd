@@ -17,5 +17,6 @@ func customizedRegister(r *server.Hertz) {
 		steg.POST("/decode_image", handler.DecodeImageFromImage)
 		steg.POST("/encode_doc", handler.EncodeDocFromImage)
 		steg.POST("/decode_doc", handler.DecodeDocFromImage)
+		steg.POST("/decode_intelligent", handler.DecodeDocOrImageFromImage)
 	}
 }

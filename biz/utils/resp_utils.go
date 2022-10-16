@@ -21,7 +21,7 @@ func ResponseError(c *app.RequestContext, msg string, err error) {
 	if err != nil {
 		errMsg = err.Error()
 	}
-	c.JSON(consts.StatusInternalServerError, utils.H{
+	c.JSON(consts.StatusOK, utils.H{
 		"code":    1,
 		"message": msg,
 		"data": utils.H{

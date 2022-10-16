@@ -48,7 +48,7 @@ func PutFile(ctx context.Context, localFile string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	err = formUploader.PutFile(ctx, &ret, upToken, fmt.Sprintf("%v/%v", config.Prefix, hash), localFile, nil)
+	err = formUploader.PutFile(ctx, &ret, upToken, fmt.Sprintf("%v/%v.%v", config.Prefix, hash, "png"), localFile, nil)
 	if err != nil {
 		return "", err
 	}

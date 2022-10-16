@@ -209,6 +209,10 @@ github.com/rogpeppe/go-internal v1.3.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFR
 github.com/rogpeppe/go-internal v1.6.1/go.mod h1:xXDCJY+GAPziupqXw64V24skbSoqbTEfhy4qGm1nDQc=
 github.com/rogpeppe/go-internal v1.8.0 h1:FCbCCtXNOY3UtUuHUYaghJg4y7Fd14rXifAYUAtL9R8=
 github.com/rogpeppe/go-internal v1.8.0/go.mod h1:WmiCO8CzOY8rg0OYDC4/i/2WRWAB6poM+XZ2dLUbcbE=
+github.com/shamsher31/goimgext v1.0.0 h1:wFKf9GeeE0Xr6UQtliaPgYYgTju2izobM7XpCEgUCC8=
+github.com/shamsher31/goimgext v1.0.0/go.mod h1:rYLKgXuTGBIaH49z+jUVSWz7gUWIZmqvYUsdvJbNNOc=
+github.com/shamsher31/goimgtype v1.0.0 h1:7nmPz5GEb01sjFUojCbZJcBI68A8tmLXoCFbb5I34u4=
+github.com/shamsher31/goimgtype v1.0.0/go.mod h1:OZm3NZQDbK0ezlk9IV5oq3cWQwjF1oVSxKNx19bkf64=
 github.com/spf13/afero v1.8.2 h1:xehSyVa0YnHWsJ49JFljMpg1HX19V6NDZ1fkm1Xznbo=
 github.com/spf13/afero v1.8.2/go.mod h1:CtAatgMJh6bJEIs48Ay/FOnkljP3WeGUG0MC1RfAqwo=
 github.com/spf13/cast v1.5.0 h1:rj3WzYc11XZaIZMPKmwP96zkFEnnAmV8s6XbB2aY32w=

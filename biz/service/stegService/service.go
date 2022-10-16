@@ -2,9 +2,12 @@ package stegService
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
+
+	imgtype "github.com/shamsher31/goimgtype"
 
 	"github.com/xhdd123321/whicinth-steganography-bd/biz/pkg/stegify"
 	"github.com/xhdd123321/whicinth-steganography-bd/biz/utils"
@@ -52,6 +55,11 @@ func DecodeImage(decodeFile string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("decode failed, err: %v", err)
 	}
+	// 判断结果是否为图片
+	_, err = imgtype.Get(resFile)
+	if err != nil {
+		return "", fmt.Errorf("decode failed, err: %v", err)
+	}
 	return resFile, nil
 }
 
@@ -92,5 +100,9 @@ func DecodeDoc(decodeFile string) (string, error) {
 		return res, fmt.Errorf("decode failed, err: %v\n", err)
 	}
 	res = originData.String()
+	// 判断结果是否为文字
+	if len(res) > 5000 {
+		return res, fmt.Errorf("decode failed, err: %v\n", errors.New("text non-existent"))
+	}
 	return res, nil
 }

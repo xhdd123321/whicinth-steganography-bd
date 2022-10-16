@@ -38,6 +38,7 @@ dumped_hertz_remote_config.json
 !default.config.yaml
 media/decode_doc/*
 media/decode_image/*
+media/decode_intelligent/*
 media/encode_doc/*
 media/encode_image/*
 		  
