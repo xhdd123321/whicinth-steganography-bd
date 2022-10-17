@@ -19,4 +19,14 @@ func customizedRegister(r *server.Hertz) {
 		steg.POST("/decode_doc", handler.DecodeDocFromImage)
 		steg.POST("/decode_intelligent", handler.DecodeDocOrImageFromImage)
 	}
+
+	sys := r.Group("/sys")
+	{
+		sys.GET("/api_statistic", handler.GetApiStatistic)
+	}
+
+	drift := r.Group("/drift")
+	{
+		drift.GET("/receive", handler.ReceiveDrift)
+	}
 }

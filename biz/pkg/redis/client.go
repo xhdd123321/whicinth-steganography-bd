@@ -21,7 +21,6 @@ var (
 func InitRedis() {
 	// 配置初始化
 	config = viper.Conf.Redis
-
 	initRedis(context.Background(), &Client)
 }
 
@@ -67,4 +66,56 @@ func GetIncrId(ctx context.Context, key string) int64 {
 		return 0
 	}
 	return id
+}
+
+// GetValue 获取redis value
+func GetValue(ctx context.Context, key string) string {
+	res, err := Client.Get(ctx, key).Result()
+	if err != nil {
+		hlog.CtxErrorf(ctx, "[Redis] GetIncrId failed, key: %v, err: %v", key, err)
+		return ""
+	}
+	return res
+}
+
+const DRIFT_KEY = "drift"
+
+// AddDriftSet 漂流信集合新增元素
+func AddDriftSet(ctx context.Context, value string) bool {
+	key := DRIFT_KEY
+	res, err := Client.SAdd(ctx, key, value).Result()
+	if err != nil {
+		hlog.CtxErrorf(ctx, "[Redis] AppendDriftSet failed, key: %v, value: %v, err: %v", key, value, err)
+		return false
+	}
+	// 移除超过限制的历史元素
+	if res > int64(config.DriftLimit) {
+		_, err = Client.SPopN(ctx, key, int64(config.DriftLimit)-res).Result()
+		if err != nil {
+			hlog.CtxErrorf(ctx, "[Redis] DriftSet SPopN failed, key: %v, value: %v, err: %v", key, err)
+		}
+	}
+	return true
+}
+
+// ReceiveDrift 接收漂流信
+func ReceiveDrift(ctx context.Context) (string, error) {
+	key := DRIFT_KEY
+	drift, err := Client.SRandMember(ctx, key).Result()
+	if err != nil {
+		hlog.CtxErrorf(ctx, "[Redis] ReceiveDrift failed, key: %v, err: %v", key, err)
+		return "", err
+	}
+	return drift, nil
+}
+
+// GetDriftCount 获取漂流信数量
+func GetDriftCount(ctx context.Context) int64 {
+	key := DRIFT_KEY
+	count, err := Client.SCard(ctx, key).Result()
+	if err != nil {
+		hlog.CtxErrorf(ctx, "[Redis] GetDriftCount failed, key: %v, err: %v", key, err)
+		return 0
+	}
+	return count
 }

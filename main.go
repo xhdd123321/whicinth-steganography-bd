@@ -3,6 +3,9 @@
 package main
 
 import (
+	"math/rand"
+	"time"
+
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/xhdd123321/whicinth-steganography-bd/biz/pkg/cronjob"
 	"github.com/xhdd123321/whicinth-steganography-bd/biz/pkg/godotenv"
@@ -12,6 +15,7 @@ import (
 )
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
 	godotenv.InitGodotenv()
 	viper.InitViper()
 	redis.InitRedis()

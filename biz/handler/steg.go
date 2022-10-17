@@ -22,6 +22,12 @@ const (
 	CARRIER_FILE = "carrier_file"
 	DATA_FILE    = "data_file"
 	DATA_DOC     = "data_doc"
+
+	ENCODE_IMAGE_KEY       = "encode_image"
+	ENCODE_DOC_KEY         = "encode_doc"
+	DECODE_IMAGE_KEY       = "decode_image"
+	DECODE_DOC_KEY         = "decode_doc"
+	DECODE_INTELLIGENT_KEY = "decode_intelligent"
 )
 
 // EncodeImageFromImage 图片中加密图片
@@ -35,7 +41,7 @@ func EncodeImageFromImage(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	// 创建临时文件夹
-	key := "encode_image"
+	key := ENCODE_IMAGE_KEY
 	id := redis.GetIncrId(ctx, key)
 	if id <= 0 {
 		hlog.CtxErrorf(ctx, "GetIncrId failed, key: %v", key)
@@ -82,6 +88,10 @@ func EncodeImageFromImage(ctx context.Context, c *app.RequestContext) {
 		utils.ResponseError(c, "PutFile failed", err)
 		return
 	}
+	// 将文件缓存至漂流信
+	if !redis.AddDriftSet(ctx, url) {
+		hlog.CtxErrorf(ctx, "AppendDriftList failed, url: %v", url)
+	}
 	// Response
 	resp := map[string]interface{}{
 		"carrier_file": carrierUploadPath,
@@ -103,7 +113,7 @@ func DecodeImageFromImage(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	// 创建临时文件夹
-	key := "decode_image"
+	key := DECODE_IMAGE_KEY
 	id := redis.GetIncrId(ctx, key)
 	if id <= 0 {
 		hlog.CtxErrorf(ctx, "GetIncrId failed, key: %v", key)
@@ -162,7 +172,7 @@ func EncodeDocFromImage(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	// 创建临时文件夹
-	key := "encode_doc"
+	key := ENCODE_DOC_KEY
 	id := redis.GetIncrId(ctx, key)
 	if id <= 0 {
 		hlog.CtxErrorf(ctx, "GetIncrId failed, key: %v", key)
@@ -209,6 +219,10 @@ func EncodeDocFromImage(ctx context.Context, c *app.RequestContext) {
 		utils.ResponseError(c, "PutFile failed", err)
 		return
 	}
+	// 将文件缓存至漂流信
+	if !redis.AddDriftSet(ctx, url) {
+		hlog.CtxErrorf(ctx, "AppendDriftList failed, url: %v", url)
+	}
 	// Response
 	resp := map[string]interface{}{
 		"carrier_file": carrierUploadPath,
@@ -230,7 +244,7 @@ func DecodeDocFromImage(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	// 创建临时文件夹
-	key := "decode_doc"
+	key := DECODE_DOC_KEY
 	id := redis.GetIncrId(ctx, key)
 	if id <= 0 {
 		hlog.CtxErrorf(ctx, "GetIncrId failed, key: %v", key)
@@ -281,7 +295,7 @@ func DecodeDocOrImageFromImage(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	// 创建临时文件夹
-	key := "decode_intelligent"
+	key := DECODE_INTELLIGENT_KEY
 	id := redis.GetIncrId(ctx, key)
 	if id <= 0 {
 		hlog.CtxErrorf(ctx, "GetIncrId failed, key: %v", key)
