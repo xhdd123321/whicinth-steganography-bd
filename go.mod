@@ -7,6 +7,7 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/joho/godotenv v1.4.0
 	github.com/qiniu/go-sdk/v7 v7.13.0
+	github.com/shamsher31/goimgtype v1.0.0
 	github.com/spf13/viper v1.13.0
 	github.com/stretchr/testify v1.8.0
 )
@@ -33,7 +34,6 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.5 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/shamsher31/goimgext v1.0.0 // indirect
-	github.com/shamsher31/goimgtype v1.0.0 // indirect
 	github.com/spf13/afero v1.8.2 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
