@@ -23,6 +23,8 @@ const (
 	DATA_FILE    = "data_file"
 	DATA_DOC     = "data_doc"
 
+	SHARE_QUERY = "share"
+
 	ENCODE_IMAGE_KEY       = "encode_image"
 	ENCODE_DOC_KEY         = "encode_doc"
 	DECODE_IMAGE_KEY       = "decode_image"
@@ -88,8 +90,10 @@ func EncodeImageFromImage(ctx context.Context, c *app.RequestContext) {
 		utils.ResponseError(c, "PutFile failed", err)
 		return
 	}
+	// 检查文件是否公开
+	share := c.DefaultQuery(SHARE_QUERY, "true") == "true"
 	// 将文件缓存至漂流信
-	if !redis.AddDriftSet(ctx, url) {
+	if share && !redis.AddDriftSet(ctx, url) {
 		hlog.CtxErrorf(ctx, "AppendDriftList failed, url: %v", url)
 	}
 	// Response
@@ -219,8 +223,10 @@ func EncodeDocFromImage(ctx context.Context, c *app.RequestContext) {
 		utils.ResponseError(c, "PutFile failed", err)
 		return
 	}
+	// 检查文件是否公开
+	share := c.DefaultQuery(SHARE_QUERY, "true") == "true"
 	// 将文件缓存至漂流信
-	if !redis.AddDriftSet(ctx, url) {
+	if share && !redis.AddDriftSet(ctx, url) {
 		hlog.CtxErrorf(ctx, "AppendDriftList failed, url: %v", url)
 	}
 	// Response
