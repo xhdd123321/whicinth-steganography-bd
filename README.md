@@ -13,6 +13,7 @@
 ### 一、本地开发
 
 #### 配置文件
+> 配置文件说明：参考`/pkg/viper/config.go`
 1. 在`/conf`目录下创建`dev.config.yaml`根据`default.config.yaml`完成配置
 2. 修改`.env`文件`RUN_ENV = DEV`
 3. 启动项目会自动注入`.env`中的环境变量并读取`dev.config.yaml`中的配置
@@ -27,11 +28,13 @@
 ### 二、线上部署
 
 #### 配置文件
+> 配置文件说明：参考`/pkg/viper/config.go`
 1. 在`/conf`目录下创建`prod.config.yaml`根据`default.config.yaml`完成配置
 2. 修改`.env`文件`RUN_ENV = PROD`
 3. 启动项目会自动注入`.env`中的环境变量并读取`prod.config.yaml`中的配置
 
 #### 部署流程
+> Linux 生产环境
 1. 下载golang安装包并上传至Linux: https://studygolang.com/dl
 2. 安装golang1.19
 ```shell
