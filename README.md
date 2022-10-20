@@ -8,6 +8,10 @@
 
 > 开发文档：[Re：从零开始的golang-hertz项目实战](https://zhu-an.cn/todo/Re：从零开始的golang-hertz项目实战/)
 
+## 简介
+
+![image-20221021004444216](https://img.zhu-an.cn/img/20221021004444.png)
+
 ## 服务部署
 
 ### 一、本地开发
