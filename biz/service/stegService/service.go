@@ -7,6 +7,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/cloudwego/hertz/pkg/common/hlog"
+
 	imgtype "github.com/shamsher31/goimgtype"
 
 	"github.com/xhdd123321/whicinth-steganography-bd/biz/pkg/stegify"
@@ -101,7 +103,8 @@ func DecodeDoc(decodeFile string) (string, error) {
 	}
 	res = originData.String()
 	// 判断结果是否为文字
-	if len(res) > 5000 {
+	if len(res) > 10000 {
+		hlog.Errorf("originData len exceed limit, len(originData): %v", len(res))
 		return res, fmt.Errorf("decode failed, err: %v\n", errors.New("text non-existent"))
 	}
 	return res, nil
