@@ -61,7 +61,11 @@ make start
 
 #### 终止服务
 ```shell
-ps f | grep ./whicinth-steganography-bd # 找到 ./whicinth-steganography-bd 进程PID
-kill -9 PID
+make stop # 找到 ./whicinth-steganography-bd 进程PID并将其kill
+```
+
+#### 重启服务
+```shell
+make restart
 ```
 
