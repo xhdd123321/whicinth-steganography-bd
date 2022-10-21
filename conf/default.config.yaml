@@ -1,6 +1,6 @@
 App:
   HostPorts: 127.0.0.1:8888
-  MaxRequestBodySize: 20971520  # 20M
+  MaxRequestBodySize: 31457280  # 30M
 
 Cronjob:
   TempFileMinute: 1440
