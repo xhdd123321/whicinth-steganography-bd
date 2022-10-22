@@ -13,8 +13,10 @@ import (
 	"github.com/xhdd123321/whicinth-steganography-bd/biz/utils"
 )
 
+// 测试用文件过期时间
 const TTL_MINUTE_TEST = 1
 
+// 清理过期文件测试
 func TestClearFile(t *testing.T) {
 	err := ClearFile(context.Background(), TTL_MINUTE_TEST)
 	if err != nil {

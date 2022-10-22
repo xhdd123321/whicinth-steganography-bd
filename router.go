@@ -4,6 +4,7 @@ package main
 
 import (
 	"github.com/cloudwego/hertz/pkg/app/server"
+	"github.com/hertz-contrib/pprof"
 	"github.com/xhdd123321/whicinth-steganography-bd/biz/handler"
 )
 
@@ -28,5 +29,10 @@ func customizedRegister(r *server.Hertz) {
 	drift := r.Group("/drift")
 	{
 		drift.GET("/receive", handler.ReceiveDrift)
+	}
+
+	dashboard := r.Group("/admin")
+	{
+		pprof.RouteRegister(dashboard, "pprof")
 	}
 }
