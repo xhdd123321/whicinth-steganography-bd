@@ -9,8 +9,6 @@ import (
 
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 
-	imgtype "github.com/shamsher31/goimgtype"
-
 	"github.com/xhdd123321/whicinth-steganography-bd/biz/pkg/stegify"
 	"github.com/xhdd123321/whicinth-steganography-bd/biz/utils"
 )
@@ -46,7 +44,6 @@ func DecodeImage(decodeFile string) (string, error) {
 		return "", fmt.Errorf("read file [%s] failed, err: %v", decodeFile, err)
 	}
 	decodeReader := bytes.NewReader(fByte)
-
 	resFile := utils.GetExtractedFilename(decodeFile)
 	outWriter, err := os.Create(resFile)
 	if err != nil {
@@ -58,7 +55,7 @@ func DecodeImage(decodeFile string) (string, error) {
 		return "", fmt.Errorf("decode failed, err: %v", err)
 	}
 	// 判断结果是否为图片
-	_, err = imgtype.Get(resFile)
+	_, err = utils.IsImageType(resFile)
 	if err != nil {
 		return "", fmt.Errorf("decode failed, err: %v", err)
 	}
@@ -94,7 +91,6 @@ func DecodeDoc(decodeFile string) (string, error) {
 		return res, fmt.Errorf("read file [%s] failed, err: %v\n", decodeFile, err)
 	}
 	decodeReader := bytes.NewReader(fByte)
-
 	originData := bytes.NewBufferString("")
 	// 解密
 	err = stegify.Decode(decodeReader, originData)

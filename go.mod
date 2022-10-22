@@ -26,6 +26,7 @@ require (
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/h2non/filetype v1.1.3 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/henrylee2cn/ameda v1.4.10 // indirect
 	github.com/henrylee2cn/goutil v0.0.0-20210127050712-89660552f6f8 // indirect

@@ -3,6 +3,7 @@ package utils
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"errors"
 	"io"
 	"log"
 	"os"
@@ -10,6 +11,8 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	"github.com/h2non/filetype"
 )
 
 // GetFileHash 计算文件Hash(md5)
@@ -86,4 +89,17 @@ func getCurrentAbPathByCaller() string {
 		abPath = path.Dir(filename)
 	}
 	return abPath
+}
+
+// IsImageType returns the type of Image
+func IsImageType(p string) (bool, error) {
+	buf, err := os.ReadFile(p)
+	if err != nil {
+		return false, err
+	}
+	if filetype.IsImage(buf) {
+		return true, nil
+	} else {
+		return false, errors.New("invalid image type")
+	}
 }

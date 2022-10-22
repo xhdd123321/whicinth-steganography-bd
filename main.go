@@ -29,6 +29,7 @@ func serverInit() {
 	h := server.Default(
 		server.WithHostPorts(viper.Conf.App.HostPorts),
 		server.WithMaxRequestBodySize(viper.Conf.App.MaxRequestBodySize),
+		server.WithExitWaitTime(60),
 	)
 	register(h)
 	h.Spin()
