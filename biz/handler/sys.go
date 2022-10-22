@@ -58,10 +58,10 @@ func GetSysMonitor(ctx context.Context, c *app.RequestContext) {
 	// Response
 	resp := map[string]interface{}{
 		"cpu_cores":   info.CpuInfo.Cores,
-		"cpu_percent": info.CpuPercent,
+		"cpu_percent": int(info.CpuPercent),
 		"mem_total":   info.MemInfo.Total,
 		"mem_used":    info.MemInfo.Used,
-		"mem_percent": info.MemInfo.UsedPercent,
+		"mem_percent": int(info.MemInfo.UsedPercent),
 	}
 	utils.ResponseOK(c, "GetSysMonitor Success", resp)
 }
