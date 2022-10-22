@@ -31,5 +31,6 @@ func ReceiveDrift(ctx context.Context, c *app.RequestContext) {
 	resp := map[string]interface{}{
 		"url": url,
 	}
+	hlog.CtxInfof(ctx, "ReceiveDrift Success, resp: %+v", resp)
 	utils.ResponseOK(c, "ReceiveDrift Success", resp)
 }

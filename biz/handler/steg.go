@@ -103,6 +103,7 @@ func EncodeImageFromImage(ctx context.Context, c *app.RequestContext) {
 		"result_file":  resultFilePath,
 		"url":          url,
 	}
+	hlog.CtxInfof(ctx, "EncodeImageFromImage Success, resp: %+v", resp)
 	utils.ResponseOK(c, "EncodeImageFromImage Success", resp)
 }
 
@@ -162,6 +163,7 @@ func DecodeImageFromImage(ctx context.Context, c *app.RequestContext) {
 		"result_file":  res,
 		"url":          url,
 	}
+	hlog.CtxInfof(ctx, "DecodeImageFromImage Success, resp: %+v", resp)
 	utils.ResponseOK(c, "DecodeImageFromImage Success", resp)
 }
 
@@ -236,6 +238,7 @@ func EncodeDocFromImage(ctx context.Context, c *app.RequestContext) {
 		"result_file":  resultFilePath,
 		"url":          url,
 	}
+	hlog.CtxInfof(ctx, "EncodeDocFromImage Success, resp: %+v", resp)
 	utils.ResponseOK(c, "EncodeDocFromImage Success", resp)
 }
 
@@ -287,6 +290,7 @@ func DecodeDocFromImage(ctx context.Context, c *app.RequestContext) {
 		"carrier_file": carrierUploadPath,
 		"result_doc":   res,
 	}
+	hlog.CtxInfof(ctx, "DecodeDocFromImage Success, resp: %+v", resp)
 	utils.ResponseOK(c, "DecodeDocFromImage Success", resp)
 }
 
@@ -358,5 +362,6 @@ func DecodeDocOrImageFromImage(ctx context.Context, c *app.RequestContext) {
 		"result_file":  res,
 		"url":          url,
 	}
+	hlog.CtxInfof(ctx, "DecodeImageFromImage Success, resp: %+v", resp)
 	utils.ResponseOK(c, "DecodeImageFromImage Success", resp)
 }
