@@ -81,7 +81,7 @@ make restart
 启动项目：`make start`
 
 ## 日志收集
-使用`make start`启动项目会将日志输出至项目本地根目录`output`
+使用`make start`启动项目会将日志输出至项目本地根目录`output`，有日志分片需求可创建cronjob每天00:00执行`make restart`，服务会在60s的优雅退出时间后彻底断开长链接
 
 - 服务启动日志：`output/start_YYYY-mm-dd.txt`
 - 服务运行日志：`output/run_YYYY-mm-dd.txt`
