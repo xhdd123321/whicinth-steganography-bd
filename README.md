@@ -76,6 +76,8 @@ make restart
 
 更新依赖：`go mod tidy`
 
+构建二进制文件：`make build`
+
 启动项目：`make start`
 
 ## 日志收集
