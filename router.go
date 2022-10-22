@@ -24,6 +24,7 @@ func customizedRegister(r *server.Hertz) {
 	sys := r.Group("/sys")
 	{
 		sys.GET("/api_statistic", handler.GetApiStatistic)
+		sys.GET("/monitor", handler.GetSysMonitor)
 	}
 
 	drift := r.Group("/drift")

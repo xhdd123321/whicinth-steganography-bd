@@ -69,3 +69,9 @@ make stop # 找到 ./whicinth-steganography-bd 进程PID并将其kill
 make restart
 ```
 
+## 性能分析
+
+系统内置了pprof帮助完成性能分析，启动服务器后访问路由`/admin/pprof`查看当前项目的采样信息，注意生产环境下不要将该路由暴露给用户，建议配置Nginx将该路由return403
+
+![image-20221022134233379](https://img.zhu-an.cn/img/20221022134233.png)
+

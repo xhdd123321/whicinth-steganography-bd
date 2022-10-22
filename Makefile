@@ -13,7 +13,7 @@ start:
 	nohup make run > output/start_`date +%Y-%m-%d`.txt 2> output/run_`date +%Y-%m-%d`.txt &
 
 stop:
-	pidof ./whicinth-steganography-bd | xargs kill -9
+	pidof ./${BIN_FILE} | xargs kill -9
 
 restart: stop start
 

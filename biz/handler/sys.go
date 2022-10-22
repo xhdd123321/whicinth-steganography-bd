@@ -4,6 +4,8 @@ import (
 	"context"
 	"strconv"
 
+	"github.com/xhdd123321/whicinth-steganography-bd/biz/service/sysService"
+
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/xhdd123321/whicinth-steganography-bd/biz/pkg/redis"
@@ -43,4 +45,23 @@ func GetApiStatistic(ctx context.Context, c *app.RequestContext) {
 		"drift_count":            driftCount,
 	}
 	utils.ResponseOK(c, "GetApiStatistic Success", resp)
+}
+
+// GetSysMonitor 获取系统性能监控
+func GetSysMonitor(ctx context.Context, c *app.RequestContext) {
+	info, err := sysService.GetSysInfo()
+	if err != nil {
+		hlog.CtxErrorf(ctx, "GetSysMonitor Failed, err: %v", err)
+		utils.ResponseError(c, "GetSysMonitor Failed", err)
+		return
+	}
+	// Response
+	resp := map[string]interface{}{
+		"cpu_cores":   info.CpuInfo.Cores,
+		"cpu_percent": info.CpuPercent,
+		"mem_total":   info.MemInfo.Total,
+		"mem_used":    info.MemInfo.Used,
+		"mem_percent": info.MemInfo.UsedPercent,
+	}
+	utils.ResponseOK(c, "GetSysMonitor Success", resp)
 }
