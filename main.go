@@ -6,6 +6,8 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/xhdd123321/whicinth-steganography-bd/biz/pkg/tinify"
+
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/xhdd123321/whicinth-steganography-bd/biz/pkg/cronjob"
 	"github.com/xhdd123321/whicinth-steganography-bd/biz/pkg/godotenv"
@@ -21,6 +23,7 @@ func main() {
 	redis.InitRedis()
 	qiniu.InitQiniu()
 	cronjob.InitCronjob()
+	tinify.InitTinify()
 
 	serverInit()
 }

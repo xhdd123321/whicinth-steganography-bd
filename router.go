@@ -31,6 +31,10 @@ func customizedRegister(r *server.Hertz) {
 	{
 		drift.GET("/receive", handler.ReceiveDrift)
 	}
+	pre := r.Group("/pre")
+	{
+		pre.POST("/compress", handler.CompressImageByTinify)
+	}
 
 	dashboard := r.Group("/admin")
 	{

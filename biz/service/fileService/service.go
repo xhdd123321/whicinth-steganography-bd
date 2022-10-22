@@ -2,10 +2,15 @@ package fileService
 
 import (
 	"context"
+	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/xhdd123321/whicinth-steganography-bd/biz/model"
+
+	"github.com/xhdd123321/whicinth-steganography-bd/biz/pkg/tinify"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
@@ -56,4 +61,18 @@ func ClearFile(ctx context.Context, ttlMinutes float64) error {
 	}
 	hlog.CtxInfof(ctx, "ClearFile Result: %v/%v", success, len(needRemovePathList))
 	return nil
+}
+
+// CompressImage 无损压缩图片文件
+func CompressImage(ctx context.Context, preFile string) (shrinkResp *model.ShrinkResp, err error) {
+	fByte, err := os.ReadFile(preFile)
+	if err != nil {
+		return nil, fmt.Errorf("read preFile [%s] failed, err: %v", preFile, err)
+	}
+	res, err := tinify.UploadImage2Compare(ctx, fByte)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "UploadImage2Compare failed, err: %v", err)
+		return nil, err
+	}
+	return res, nil
 }

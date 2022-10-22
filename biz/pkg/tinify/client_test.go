@@ -1,6 +1,7 @@
 package tinify
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 	"testing"
@@ -23,7 +24,7 @@ func TestUploadImageZip(t *testing.T) {
 	if err != nil {
 		t.Errorf("ReadFile failed, err: %v", err)
 	}
-	res, err := UploadImageZip(fByte)
+	res, err := UploadImage2Compare(context.Background(), fByte)
 	if err != nil {
 		t.Errorf("ReadFile failed, err: %v", err)
 	}

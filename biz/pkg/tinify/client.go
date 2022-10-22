@@ -18,7 +18,7 @@ var (
 	config *viper.Tinify
 )
 
-// InitTinify 初始化tinify图片压缩client
+// InitTinify 初始化Tinify图片压缩Client
 func InitTinify() {
 	// 配置初始化
 	config = viper.Conf.Tinify
@@ -28,17 +28,18 @@ func InitTinify() {
 	if err != nil {
 		hlog.Fatalf("[Tinify] Init Tinify Failed, %v", err)
 	}
-	hlog.Info("[Tinify] Init Tinify Success")
+	hlog.Info("[Tinify] Init Tinify Success, host: %v", config.Host)
 }
 
-func UploadImageZip(fbyte []byte) (shrinkResp *model.ShrinkResp, err error) {
+func UploadImage2Compare(ctx context.Context, fByte []byte) (shrinkResp *model.ShrinkResp, err error) {
 	req := protocol.AcquireRequest()
 	res := protocol.AcquireResponse()
 	req.SetMethod(consts.MethodPost)
 	req.SetRequestURI(config.Host + "/shrink")
 	req.SetHeader("Authorization", config.Auth)
-	req.SetBody(fbyte)
+	req.SetBody(fByte)
 	if err = Client.Do(context.Background(), req, res); err != nil {
+		hlog.CtxErrorf(ctx, "[Tinify] Request shrink API, err: %v", err)
 		return nil, err
 	}
 	shrinkResp = &model.ShrinkResp{}

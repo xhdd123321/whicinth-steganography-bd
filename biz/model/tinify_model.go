@@ -7,8 +7,8 @@ import (
 )
 
 type ShrinkResp struct {
-	Input  *Input  `json:"input"`
-	Output *Output `json:"output"`
+	Input  Input  `json:"input"`
+	Output Output `json:"output"`
 }
 
 type Input struct {

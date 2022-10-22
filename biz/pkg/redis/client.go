@@ -68,6 +68,16 @@ func GetDriftLock(ctx context.Context, key string) bool {
 	return lockSuccess
 }
 
+// GetCompressLock 获取压缩操作Redis锁
+func GetCompressLock(ctx context.Context, key string) bool {
+	lockSuccess, err := Client.SetNX(ctx, fmt.Sprintf("compress_lock_%v", key), "w", time.Duration(config.CompressLockSecond)*time.Second).Result()
+	if err != nil {
+		hlog.CtxErrorf(ctx, "[Redis] GetCompressLock failed, key: %v, err: %v", key, err)
+		return false
+	}
+	return lockSuccess
+}
+
 // GetIncrId 获取Redis计数器
 func GetIncrId(ctx context.Context, key string) int64 {
 	id, err := Client.Incr(ctx, key).Result()

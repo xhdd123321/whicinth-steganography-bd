@@ -59,7 +59,8 @@ func EncodeImageFromImage(ctx context.Context, c *app.RequestContext) {
 	}
 	// 清理临时文件夹
 	defer func(path string) {
-		_ = os.RemoveAll(path)
+		err = os.RemoveAll(path)
+		hlog.CtxErrorf(ctx, "Clear temp file failed, path: %v, err: %v", path, err)
 	}(dir)
 	// 上传载体文件
 	carrierUploadPath := filepath.Join(dir, "carrier.png")
@@ -134,7 +135,8 @@ func DecodeImageFromImage(ctx context.Context, c *app.RequestContext) {
 	}
 	// 清理临时文件夹
 	defer func(path string) {
-		_ = os.RemoveAll(path)
+		err = os.RemoveAll(path)
+		hlog.CtxErrorf(ctx, "Clear temp file failed, path: %v, err: %v", path, err)
 	}(dir)
 	// 上传载体文件
 	carrierUploadPath := filepath.Join(dir, "carrier.png")
@@ -194,7 +196,8 @@ func EncodeDocFromImage(ctx context.Context, c *app.RequestContext) {
 	}
 	// 清理临时文件夹
 	defer func(path string) {
-		_ = os.RemoveAll(path)
+		err = os.RemoveAll(path)
+		hlog.CtxErrorf(ctx, "Clear temp file failed, path: %v, err: %v", path, err)
 	}(dir)
 	// 上传载体文件
 	carrierUploadPath := filepath.Join(dir, "carrier.png")
@@ -269,7 +272,8 @@ func DecodeDocFromImage(ctx context.Context, c *app.RequestContext) {
 	}
 	// 清理临时文件夹
 	defer func(path string) {
-		_ = os.RemoveAll(path)
+		err = os.RemoveAll(path)
+		hlog.CtxErrorf(ctx, "Clear temp file failed, path: %v, err: %v", path, err)
 	}(dir)
 	// 上传载体文件
 	carrierUploadPath := filepath.Join(dir, "carrier.png")
@@ -321,7 +325,8 @@ func DecodeDocOrImageFromImage(ctx context.Context, c *app.RequestContext) {
 	}
 	// 清理临时文件夹
 	defer func(path string) {
-		_ = os.RemoveAll(path)
+		err = os.RemoveAll(path)
+		hlog.CtxErrorf(ctx, "Clear temp file failed, path: %v, err: %v", path, err)
 	}(dir)
 	// 上传载体文件
 	carrierUploadPath := filepath.Join(dir, "carrier.png")

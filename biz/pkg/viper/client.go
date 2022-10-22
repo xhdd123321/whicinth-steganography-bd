@@ -39,4 +39,5 @@ func InitViper() {
 	hlog.CtxInfof(ctx, "[Viper] Conf.Redis: %#v", Conf.Redis)
 	hlog.CtxInfof(ctx, "[Viper] Conf.Qiniu: %#v", Conf.Qiniu)
 	hlog.CtxInfof(ctx, "[Viper] Conf.Cronjob: %#v", Conf.Cronjob)
+	hlog.CtxInfof(ctx, "[Viper] Conf.Tinify: %#v", Conf.Tinify)
 }

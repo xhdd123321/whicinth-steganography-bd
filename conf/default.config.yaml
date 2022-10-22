@@ -20,6 +20,7 @@ Redis:
   EncodeLockSecond: 10
   DecodeLockSecond: 10
   DriftLockSecond: 2
+  CompressLockSecond: 5
   DriftLimit: 10000
 
 Tinify:
