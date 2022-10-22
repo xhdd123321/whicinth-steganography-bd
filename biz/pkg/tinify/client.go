@@ -2,6 +2,7 @@ package tinify
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/json"
 
 	"github.com/xhdd123321/whicinth-steganography-bd/biz/model"
@@ -24,7 +25,12 @@ func InitTinify() {
 	config = viper.Conf.Tinify
 
 	var err error
-	Client, err = client.NewClient()
+	clientCfg := &tls.Config{
+		InsecureSkipVerify: true,
+	}
+	Client, err = client.NewClient(
+		client.WithTLSConfig(clientCfg),
+	)
 	if err != nil {
 		hlog.Fatalf("[Tinify] Init Tinify Failed, %v", err)
 	}
@@ -34,6 +40,10 @@ func InitTinify() {
 func UploadImage2Compare(ctx context.Context, fByte []byte) (shrinkResp *model.ShrinkResp, err error) {
 	req := protocol.AcquireRequest()
 	res := protocol.AcquireResponse()
+	defer func() {
+		protocol.ReleaseRequest(req)
+		protocol.ReleaseResponse(res)
+	}()
 	req.SetMethod(consts.MethodPost)
 	req.SetRequestURI(config.Host + "/shrink")
 	req.SetHeader("Authorization", config.Auth)
