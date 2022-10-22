@@ -69,6 +69,21 @@ make stop # 找到 ./whicinth-steganography-bd 进程PID并将其kill
 make restart
 ```
 
+## 服务升级
+停止服务：`make stop`
+
+上传本地项目至生产环境
+
+更新依赖：`go mod tidy`
+
+启动项目：`make start`
+
+## 日志收集
+使用`make start`启动项目会将日志输出至项目本地根目录`output`
+
+- 服务启动日志：`output/start_YYYY-mm-dd.txt`
+- 服务运行日志：`output/run_YYYY-mm-dd.txt`
+
 ## 性能分析
 
 系统内置了pprof帮助完成性能分析，启动服务器后访问路由`/admin/pprof`查看当前项目的采样信息，注意生产环境下不要将该路由暴露给用户，建议配置Nginx将该路由return403
