@@ -19,4 +19,5 @@ Redis:
   Db: 1
   EncodeLockSecond: 10
   DecodeLockSecond: 10
+  DriftLockSecond: 2
   DriftLimit: 10000

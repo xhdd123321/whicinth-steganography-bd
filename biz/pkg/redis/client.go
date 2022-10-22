@@ -58,6 +58,16 @@ func GetDecodeLock(ctx context.Context, key string) bool {
 	return lockSuccess
 }
 
+// GetDriftLock 获取Drift操作Redis锁
+func GetDriftLock(ctx context.Context, key string) bool {
+	lockSuccess, err := Client.SetNX(ctx, fmt.Sprintf("drift_lock_%v", key), "w", time.Duration(config.DriftLockSecond)*time.Second).Result()
+	if err != nil {
+		hlog.CtxErrorf(ctx, "[Redis] GetDriftLock failed, key: %v, err: %v", key, err)
+		return false
+	}
+	return lockSuccess
+}
+
 // GetIncrId 获取Redis计数器
 func GetIncrId(ctx context.Context, key string) int64 {
 	id, err := Client.Incr(ctx, key).Result()

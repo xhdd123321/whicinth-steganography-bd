@@ -31,5 +31,6 @@ type Redis struct {
 	Db               int    `yaml:"Db"`               // 数据库编号
 	EncodeLockSecond int    `yaml:"EncodeLockSecond"` // 加密锁限流间隔
 	DecodeLockSecond int    `yaml:"DecodeLockSecond"` // 解密锁限流间隔
+	DriftLockSecond  int    `yaml:"DriftLockSecond"`  // Drift锁限流间隔
 	DriftLimit       int    `yaml:"DriftLimit"`       // 漂流信缓存数量限制
 }
