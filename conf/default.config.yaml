@@ -21,3 +21,7 @@ Redis:
   DecodeLockSecond: 10
   DriftLockSecond: 2
   DriftLimit: 10000
+
+Tinify:
+  Host: "https://api.tinify.com"
+  Auth: "Basic XXX"

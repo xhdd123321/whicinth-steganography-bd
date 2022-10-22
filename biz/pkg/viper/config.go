@@ -5,6 +5,7 @@ type Config struct {
 	Cronjob *Cronjob `yaml:"Cronjob"`
 	Qiniu   *Qiniu   `yaml:"Qiniu"`
 	Redis   *Redis   `yaml:"Redis"`
+	Tinify  *Tinify  `yaml:"Tinify"`
 }
 
 type App struct {
@@ -33,4 +34,9 @@ type Redis struct {
 	DecodeLockSecond int    `yaml:"DecodeLockSecond"` // 解密锁限流间隔
 	DriftLockSecond  int    `yaml:"DriftLockSecond"`  // Drift锁限流间隔
 	DriftLimit       int    `yaml:"DriftLimit"`       // 漂流信缓存数量限制
+}
+
+type Tinify struct {
+	Host string `yaml:"Host"` // 服务所在地址
+	Auth string `yaml:"Auth"` // 服务认证Authorization Header
 }
