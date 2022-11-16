@@ -5,10 +5,10 @@ go 1.19
 require (
 	github.com/cloudwego/hertz v0.3.2
 	github.com/go-redis/redis/v8 v8.11.5
+	github.com/h2non/filetype v1.1.3
 	github.com/hertz-contrib/pprof v0.1.0
 	github.com/joho/godotenv v1.4.0
 	github.com/qiniu/go-sdk/v7 v7.13.0
-	github.com/shamsher31/goimgtype v1.0.0
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/spf13/viper v1.13.0
 	github.com/stretchr/testify v1.8.0
@@ -26,7 +26,6 @@ require (
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/h2non/filetype v1.1.3 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/henrylee2cn/ameda v1.4.10 // indirect
 	github.com/henrylee2cn/goutil v0.0.0-20210127050712-89660552f6f8 // indirect
@@ -38,7 +37,6 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.5 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/savsgio/gotils v0.0.0-20220530130905-52f3993e8d6d // indirect
-	github.com/shamsher31/goimgext v1.0.0 // indirect
 	github.com/spf13/afero v1.8.2 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
